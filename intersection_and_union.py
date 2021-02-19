@@ -81,6 +81,9 @@ if __name__=="__main__":
 
     print("inverted_index",inverted_index)
 
+    #Makes a set of all document postings
+    all_docids = set(sum(inverted_index.values(), []))
+    
     number_of_queries = int(input("Enter number of queries"))
 
     for query in range(number_of_queries):
@@ -93,14 +96,19 @@ if __name__=="__main__":
         for index,operator in enumerate(operators):
             pos_lists = []
 
-
-            if operator == "AND":
+            if "NOT" in operator:
+                not_items = inverted_index.get(query_terms[index+1])                
+                pos_list_2 = [x for x in all_docids if x not in not_items]
+            else:
+                pos_list_2 = inverted_index.get(query_terms[index+1])
+                
+            if "AND" in operator:
                 if index ==0:
                     pos_list_1 = inverted_index.get(query_terms[index])
                 else:
                     pos_list_1  = output
                 print("pos_list_1",pos_list_1)
-                pos_list_2 = inverted_index.get(query_terms[index+1])
+                #pos_list_2 = inverted_index.get(query_terms[index+1])
                 pos_list_1.sort()
                 pos_list_2.sort()
                 pos_lists.append(pos_list_1)
@@ -109,12 +117,12 @@ if __name__=="__main__":
                 comparisons_sum+=comparisons
                 print("Number of comparisons",comparisons_sum)
                 print("The merged postings are", output)
-            if operator == "OR":
+            elif "OR" in  operator:
                         if index ==0:
                             pos_list_1 = inverted_index.get(query_terms[index])
                         else:
                             pos_list_1  = output
-                        pos_list_2 = inverted_index.get(query_terms[index+1])
+                        #pos_list_2 = inverted_index.get(query_terms[index+1])
                         pos_list_1.sort()
                         pos_list_2.sort()
                         pos_lists.append(pos_list_1)
