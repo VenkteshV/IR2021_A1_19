@@ -52,7 +52,7 @@ def Union_op(pos_list_1,pos_list_2):
     while top_1 < len(pos_list_1):
         output.append(pos_list_1[top_1])
         top_1+=1
-        while top_2 < len(pos_list_2):
+    while top_2 < len(pos_list_2):
         output.append(pos_list_2[top_2])
         top_2+=1
     return output,comparisons    
