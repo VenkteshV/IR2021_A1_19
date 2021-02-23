@@ -1,6 +1,8 @@
 
 
-
+import joblib
+import functools
+import operator
 def intersection_op(pos_list_1,pos_list2, NOT):
     output = list()
     top_1 =0
@@ -80,27 +82,28 @@ def OR_operator(postings, NOT):
         comparison_accumulator+=comparisons
     return output, comparison_accumulator
 if __name__=="__main__":
-    inverted_index = dict()
-    terms = ["IR","Deeplearning","hyperbolic"]
-    for index,term in enumerate(terms):
-        if term not in inverted_index:
-            inverted_index[term] = []
-        else:
-            inverted_index.append(index)
+    inverted_index = joblib.load('inverted_index')
+    # terms = ["IR","Deeplearning","hyperbolic"]
+    # for index,term in enumerate(terms):
+    #     if term not in inverted_index:
+    #         inverted_index[term] = []
+    #     else:
+    #         inverted_index.append(index)
 
-    inverted_index["IR"].extend([3,9])
+    # inverted_index["IR"].extend([3,9])
 
-    inverted_index["Deeplearning"].extend([12,34,3,9])
+    # inverted_index["Deeplearning"].extend([12,34,3,9])
 
-    inverted_index["hyperbolic"].extend([3,56])
+    # inverted_index["hyperbolic"].extend([3,56])
 
-    print("inverted_index",inverted_index)
+    # print("inverted_index",set(sum(inverted_index.values(), [])) )
 
     #Makes a set of all document postings
-    all_docids = set(sum(inverted_index.values(), []))
-    
-    number_of_queries = int(input("Enter number of queries"))
+    doc_ids = list(map(lambda x: x[1],inverted_index.values()))
+    all_docids = set(functools.reduce(operator.iconcat, doc_ids, []))
 
+    print(all_docids)
+    number_of_queries = int(input("Enter number of queries"))
     for query in range(number_of_queries):
         query = str(input("Enter the query with terms separated by space"))
         query_terms = query.split(" ")
@@ -121,11 +124,11 @@ if __name__=="__main__":
             '''
             if "AND" in operator:
                 if index ==0:
-                    pos_list_1 = inverted_index.get(query_terms[index])
+                    pos_list_1 = inverted_index.get(query_terms[index])[1]
                 else:
                     pos_list_1  = output
-                print("pos_list_1",pos_list_1)
-                pos_list_2 = inverted_index.get(query_terms[index+1])
+                # print("pos_list_1",pos_list_1)
+                pos_list_2 = inverted_index.get(query_terms[index+1])[1]
                 if "NOT" in operator:
                     NOT = True
                 pos_list_1.sort()
@@ -134,17 +137,17 @@ if __name__=="__main__":
                 pos_lists.append(pos_list_2)
                 output,comparisons = AND_operator(pos_lists, NOT)
                 comparisons_sum+=comparisons
-                print("Number of comparisons",comparisons_sum)
-                print("The merged postings are", output)
+                # print("Number of comparisons",comparisons_sum)
+                # print("The merged postings are", output)
             elif "OR" in  operator:
                         if index ==0:
-                            pos_list_1 = inverted_index.get(query_terms[index])
+                            pos_list_1 = inverted_index.get(query_terms[index])[1]
                         else:
                             pos_list_1  = output
-                        pos_list_2 = inverted_index.get(query_terms[index+1])
+                        pos_list_2 = inverted_index.get(query_terms[index+1])[1]
                         if "NOT" in operator:
                             NOT = True
-                            not_items = inverted_index.get(query_terms[index+1])                
+                            not_items = inverted_index.get(query_terms[index+1])[1]           
                             pos_list_2 = [x for x in all_docids if x not in not_items]
                         pos_list_1.sort()
                         pos_list_2.sort()
@@ -152,5 +155,5 @@ if __name__=="__main__":
                         pos_lists.append(pos_list_2)
                         output,comparisons = OR_operator(pos_lists, NOT)
                         comparisons_sum+=comparisons
-                        print("Number of comparisons",comparisons_sum)
-                        print("The merged postings are", output)
+        print("Number of comparisons",comparisons_sum)
+        print("Number of documents matched", len(output))

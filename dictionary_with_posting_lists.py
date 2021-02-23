@@ -1,4 +1,5 @@
 import pickle
+import joblib
 
 # pre-processed text
 corpus = {} 
@@ -55,3 +56,4 @@ print()
 print('Posting list of play -> ' + str(dictionary['play'][1]))
 print()
 print(dictionary.get('play'))
+joblib.dump(dictionary,'inverted_index')
