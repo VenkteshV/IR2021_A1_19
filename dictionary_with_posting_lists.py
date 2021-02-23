@@ -35,12 +35,18 @@ for key in corpus.keys():
     else :
       dictionary[word] = [[],[document_map.get(key)]]
 
+# removing duplicates
+
+for key in dictionary.keys():
+  unique_postings = list(dict.fromkeys(dictionary[key][1]))
+  dictionary[key][1] = unique_postings
 
 # inserting document count
 
 for key in dictionary.keys():
   doc_count = len(dictionary[key][1])
   dictionary[key][0].append(doc_count)
+  
 
 print('Number of unique terms in dictionary : ' + str(len(dictionary.keys())))
 print()
