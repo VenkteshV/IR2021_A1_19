@@ -1,6 +1,8 @@
 import joblib
 import functools
 import operator
+from preprocessing import preProcessSentence
+
 def intersection_op(pos_list_1,pos_list2, NOT):
     output = list()
     top_1 =0
@@ -104,11 +106,22 @@ if __name__=="__main__":
     number_of_queries = int(input("Enter number of queries"))
     for query in range(number_of_queries):
         query = str(input("Enter the query with terms separated by space"))
+        query = preProcessSentence(query)
+        query=' '.join(query)
+        print("query terms",query)
         query_terms = query.split(" ")
         operation_sequence = str(input("Enter the operation sequence separated by comma"))
         operators = operation_sequence.split(",")
         output = None
         comparisons_sum = 0
+        if len(list(set(operators)))==1:
+            query_terms.sort(key=lambda x: len(inverted_index.get(x)[1]))
+            print("Sorted",query_terms)
+
+
+
+
+
         for index,operator in enumerate(operators):
             pos_lists = []
             NOT = False
@@ -150,7 +163,6 @@ if __name__=="__main__":
                 pos_list_2.sort()
                 pos_lists.append(pos_list_1)
                 pos_lists.append(pos_list_2)
-                print("pos",pos_list_1,pos_list_2)
                 output,comparisons = OR_operator(pos_lists, NOT)
                 comparisons_sum+=comparisons
         print("Number of comparisons",comparisons_sum)
