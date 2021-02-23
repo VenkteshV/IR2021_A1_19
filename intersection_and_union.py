@@ -51,28 +51,25 @@ def Union_op(pos_list_1,pos_list_2, NOT):
     top_2 = 0
     comparisons = 0
 
-    if NOT:
-        output = pos_list_2
-    else:
-        while top_1<len(pos_list_1) and top_2 < len(pos_list_2):
-            comparisons+=1
-            if pos_list_1[top_1]==pos_list_2[top_2]:
-                output.append(pos_list_1[top_1])
-                top_1+=1
-                top_2+=1
-            elif top_1<len(pos_list_1) and pos_list_1[top_1] <pos_list_2[top_2]:
-                output.append(pos_list_1[top_1])
-                top_1+=1
-            else:
-                top_2+=1
-                output.append(pos_list_2[top_2])
-
-        while top_1 < len(pos_list_1):
+    while top_1<len(pos_list_1) and top_2 < len(pos_list_2):
+        comparisons+=1
+        if pos_list_1[top_1]==pos_list_2[top_2]:
             output.append(pos_list_1[top_1])
             top_1+=1
-        while top_2 < len(pos_list_2):
-            output.append(pos_list_2[top_2])
             top_2+=1
+        elif top_1<len(pos_list_1) and pos_list_1[top_1] <pos_list_2[top_2]:
+            output.append(pos_list_1[top_1])
+            top_1+=1
+        else:
+            top_2+=1
+            output.append(pos_list_2[top_2])
+
+    while top_1 < len(pos_list_1):
+        output.append(pos_list_1[top_1])
+        top_1+=1
+    while top_2 < len(pos_list_2):
+        output.append(pos_list_2[top_2])
+        top_2+=1
     return output,comparisons    
 
 def OR_operator(postings, NOT):
