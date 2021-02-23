@@ -114,9 +114,9 @@ if __name__=="__main__":
         operators = operation_sequence.split(",")
         output = None
         comparisons_sum = 0
-        if len(list(set(operators)))==1:
-            query_terms.sort(key=lambda x: len(inverted_index.get(x)[1]))
-            print("Sorted",query_terms)
+        # if len(list(set(operators)))==1:
+        #     query_terms.sort(key=lambda x: len(inverted_index.get(x)[1]))
+        #     print("Sorted",query_terms)
 
 
 
