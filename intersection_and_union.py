@@ -1,5 +1,3 @@
-
-
 import joblib
 import functools
 import operator
@@ -12,7 +10,7 @@ def intersection_op(pos_list_1,pos_list2, NOT):
     if NOT:
         while top_1<len(pos_list_1) and top_2 < len(pos_list2):
             comparisons+=1
-            if pos_list_1[top_1]!=pos_list2[top_2] and pos_list_1[top_1] <pos_list2[top_2]:
+            if pos_list_1[top_1] <pos_list2[top_2]:
                 output.append(pos_list_1[top_1])
                 top_1+=1
             elif pos_list_1[top_1] >pos_list2[top_2]:
@@ -34,7 +32,6 @@ def intersection_op(pos_list_1,pos_list2, NOT):
                 top_1+=1
             else:
                 top_2+=1
-
     return output,comparisons
 
 
@@ -63,8 +60,9 @@ def Union_op(pos_list_1,pos_list_2, NOT):
             output.append(pos_list_1[top_1])
             top_1+=1
         else:
-            top_2+=1
             output.append(pos_list_2[top_2])
+            top_2+=1
+
 
     while top_1 < len(pos_list_1):
         output.append(pos_list_1[top_1])
@@ -127,7 +125,6 @@ if __name__=="__main__":
                     pos_list_1 = inverted_index.get(query_terms[index])[1]
                 else:
                     pos_list_1  = output
-                # print("pos_list_1",pos_list_1)
                 pos_list_2 = inverted_index.get(query_terms[index+1])[1]
                 if "NOT" in operator:
                     NOT = True
@@ -140,20 +137,21 @@ if __name__=="__main__":
                 # print("Number of comparisons",comparisons_sum)
                 # print("The merged postings are", output)
             elif "OR" in  operator:
-                        if index ==0:
-                            pos_list_1 = inverted_index.get(query_terms[index])[1]
-                        else:
-                            pos_list_1  = output
-                        pos_list_2 = inverted_index.get(query_terms[index+1])[1]
-                        if "NOT" in operator:
-                            NOT = True
-                            not_items = inverted_index.get(query_terms[index+1])[1]           
-                            pos_list_2 = [x for x in all_docids if x not in not_items]
-                        pos_list_1.sort()
-                        pos_list_2.sort()
-                        pos_lists.append(pos_list_1)
-                        pos_lists.append(pos_list_2)
-                        output,comparisons = OR_operator(pos_lists, NOT)
-                        comparisons_sum+=comparisons
+                if index ==0:
+                    pos_list_1 = inverted_index.get(query_terms[index])[1]
+                else:
+                    pos_list_1  = output
+                pos_list_2 = inverted_index.get(query_terms[index+1])[1]
+                if "NOT" in operator:
+                    NOT = True
+                    not_items = inverted_index.get(query_terms[index+1])[1]           
+                    pos_list_2 = [x for x in all_docids if x not in not_items]
+                pos_list_1.sort()
+                pos_list_2.sort()
+                pos_lists.append(pos_list_1)
+                pos_lists.append(pos_list_2)
+                print("pos",pos_list_1,pos_list_2)
+                output,comparisons = OR_operator(pos_lists, NOT)
+                comparisons_sum+=comparisons
         print("Number of comparisons",comparisons_sum)
         print("Number of documents matched", len(output))
