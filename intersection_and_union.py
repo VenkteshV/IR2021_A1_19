@@ -140,15 +140,17 @@ if __name__=="__main__":
                 else:
                     pos_list_1  = output
                 pos_list_2 = inverted_index.get(query_terms[index+1])
-                if not pos_list_2:
-                    print("Term not found: {}\nHence, operation has failed".
-                              format(query_terms[index]))
-                    skip = True
-                    break
-                else:
-                    pos_list_2 = pos_list_2[1]
                 if "NOT" in operator:
                     NOT = True
+                    pos_list_2 = pos_list_2[1] if pos_list_2 else []
+                else:
+                    if not pos_list_2:
+                        print("Term not found: {}\nHence, operation has failed".
+                                  format(query_terms[index]))
+                        skip = True
+                        break
+                    else:
+                        pos_list_2 = pos_list_2[1]
                 pos_list_1.sort()
                 pos_list_2.sort()
                 pos_lists.append(pos_list_1)
