@@ -114,6 +114,7 @@ if __name__=="__main__":
         operators = operation_sequence.split(",")
         output = None
         comparisons_sum = 0
+        skip = False
         # if len(list(set(operators)))==1:
         #     query_terms.sort(key=lambda x: len(inverted_index.get(x)[1]))
         #     print("Sorted",query_terms)
@@ -126,19 +127,26 @@ if __name__=="__main__":
             pos_lists = []
             NOT = False
             
-            '''
-            if "NOT" in operator:
-                not_items = inverted_index.get(query_terms[index+1])                
-                pos_list_2 = [x for x in all_docids if x not in not_items]
-            else:
-                pos_list_2 = inverted_index.get(query_terms[index+1])
-            '''
             if "AND" in operator:
                 if index ==0:
-                    pos_list_1 = inverted_index.get(query_terms[index])[1]
+                    pos_list_1 = inverted_index.get(query_terms[index])
+                    if not pos_list_1:
+                        print("Term not found: {}\nHence, operation has failed".
+                              format(query_terms[index]))
+                        skip = True
+                        break
+                    else:
+                        pos_list_1 = pos_list_1[1]
                 else:
                     pos_list_1  = output
-                pos_list_2 = inverted_index.get(query_terms[index+1])[1]
+                pos_list_2 = inverted_index.get(query_terms[index+1])
+                if not pos_list_2:
+                    print("Term not found: {}\nHence, operation has failed".
+                              format(query_terms[index]))
+                    skip = True
+                    break
+                else:
+                    pos_list_2 = pos_list_2[1]
                 if "NOT" in operator:
                     NOT = True
                 pos_list_1.sort()
@@ -151,19 +159,34 @@ if __name__=="__main__":
                 # print("The merged postings are", output)
             elif "OR" in  operator:
                 if index ==0:
-                    pos_list_1 = inverted_index.get(query_terms[index])[1]
+                    pos_list_1 = inverted_index.get(query_terms[index])
+                    if not pos_list_1:
+                        pos_list_1 = []
+                    else:
+                        pos_list_1 = pos_list_1[1]
                 else:
                     pos_list_1  = output
-                pos_list_2 = inverted_index.get(query_terms[index+1])[1]
+                pos_list_2 = inverted_index.get(query_terms[index+1])
+                if not pos_list_2:
+                    pos_list_2 = []
+                else:
+                    pos_list_2 = pos_list_2[1]
                 if "NOT" in operator:
                     NOT = True
-                    not_items = inverted_index.get(query_terms[index+1])[1]           
+                    not_items = inverted_index.get(query_terms[index+1])
+                    if not_items:
+                        not_items = not_items[1]
+                    else:
+                        not_items = []
                     pos_list_2 = [x for x in all_docids if x not in not_items]
+                if not pos_list_2:
+                    pos_list_2 = []
                 pos_list_1.sort()
                 pos_list_2.sort()
                 pos_lists.append(pos_list_1)
                 pos_lists.append(pos_list_2)
                 output,comparisons = OR_operator(pos_lists, NOT)
                 comparisons_sum+=comparisons
-        print("Number of comparisons",comparisons_sum)
-        print("Number of documents matched", len(output))
+        if not skip:
+            print("Number of comparisons",comparisons_sum)
+            print("Number of documents matched", len(output))
