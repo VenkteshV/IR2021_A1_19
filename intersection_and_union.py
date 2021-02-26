@@ -83,6 +83,10 @@ def OR_operator(postings, NOT):
     return output, comparison_accumulator
 if __name__=="__main__":
     inverted_index = joblib.load('inverted_index')
+    document_index_map = joblib.load('document_index_map')
+    document_index_map_keys = list(document_index_map.keys())
+    document_index_map_values = list(document_index_map.values())
+    #print(document_index_map_values)
     # terms = ["IR","Deeplearning","hyperbolic"]
     # for index,term in enumerate(terms):
     #     if term not in inverted_index:
@@ -101,6 +105,7 @@ if __name__=="__main__":
     #Makes a set of all document postings
     doc_ids = list(map(lambda x: x[1],inverted_index.values()))
     all_docids = set(functools.reduce(operator.iconcat, doc_ids, []))
+    #all_docids = set(document_index_map_values)
 
     print(all_docids)
     number_of_queries = int(input("Enter number of queries"))
@@ -127,7 +132,7 @@ if __name__=="__main__":
             pos_lists = []
             NOT = False
             
-            if "AND" in operator:
+            if "and" in operator.lower():
                 if index ==0:
                     pos_list_1 = inverted_index.get(query_terms[index])
                     if not pos_list_1:
@@ -140,7 +145,7 @@ if __name__=="__main__":
                 else:
                     pos_list_1  = output
                 pos_list_2 = inverted_index.get(query_terms[index+1])
-                if "NOT" in operator:
+                if "not" in operator.lower():
                     NOT = True
                     pos_list_2 = pos_list_2[1] if pos_list_2 else []
                 else:
@@ -159,7 +164,7 @@ if __name__=="__main__":
                 comparisons_sum+=comparisons
                 # print("Number of comparisons",comparisons_sum)
                 # print("The merged postings are", output)
-            elif "OR" in  operator:
+            elif "or" in  operator.lower():
                 if index ==0:
                     pos_list_1 = inverted_index.get(query_terms[index])
                     if not pos_list_1:
@@ -173,7 +178,7 @@ if __name__=="__main__":
                     pos_list_2 = []
                 else:
                     pos_list_2 = pos_list_2[1]
-                if "NOT" in operator:
+                if "not" in operator.lower():
                     NOT = True
                     not_items = inverted_index.get(query_terms[index+1])
                     if not_items:
@@ -192,3 +197,8 @@ if __name__=="__main__":
         if not skip:
             print("Number of comparisons",comparisons_sum)
             print("Number of documents matched", len(output))
+            print("The retrieved documents are: [", end="")
+            for out in output:
+                index = document_index_map_values.index(out)
+                print(document_index_map_keys[index], end=", ")
+            print(']')
