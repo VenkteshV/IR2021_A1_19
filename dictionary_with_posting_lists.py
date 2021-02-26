@@ -10,7 +10,7 @@ document_map = {}
 # key and corresponding posting list
 dictionary = {}
 
-with open('DocTerms.pickle', 'rb') as handle:
+with open('DocTerms_Spacy.pickle', 'rb') as handle:
   corpus = pickle.load(handle)
 
 # creating file to document mapping

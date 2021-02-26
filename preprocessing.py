@@ -63,15 +63,20 @@ def remove_stopwords(words):
             new_words.append(word)
     return new_words
 
+def get_wordnet_pos(tag):
+    tag_dict = {"J": wordnet.ADJ,"N": wordnet.NOUN,"V": wordnet.VERB,"R": wordnet.ADV}
+    return tag_dict.get(tag,wordnet.NOUN)
+
 def lemmatize(words):
-    """Lemmatize verbs in list of tokenized words"""
+    """Lemmatize words in list of tokenized words"""
     lemmatizer = WordNetLemmatizer()
     lemmas = []
-    for word in words:
-        lemma = lemmatizer.lemmatize(word,pos="v")
-        lemmas.append(lemma)
+    posTagged = nltk.pos_tag(words)
+    wordnetTagged = list(map(lambda x: (x[0], get_wordnet_pos(x[1][0])), posTagged))
+    for word,tag in wordnetTagged:
+      lemma = lemmatizer.lemmatize(word,tag)
+      lemmas.append(lemma)
     return lemmas
-
 
 def preProcess_html(fileName):
     sample = denoise_text(fileName)
