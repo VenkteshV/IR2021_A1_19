@@ -9,6 +9,7 @@ import inflect
 from bs4 import BeautifulSoup
 from nltk import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 # nltk.download('punkt')
 # nltk.download('wordnet')
