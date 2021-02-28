@@ -4,6 +4,7 @@ import re, string, unicodedata
 import nltk
 # !pip install contractions
 # !pip install inflect
+import spacy
 import contractions
 import inflect
 from bs4 import BeautifulSoup
@@ -78,7 +79,16 @@ def lemmatize(words):
       lemma = lemmatizer.lemmatize(word,tag)
       lemmas.append(lemma)
     return lemmas
-
+def lemmatizeSpacy(words):
+    sent = ""
+    lwords = []
+    for word in words:
+        sent += word + " " 
+    model = spacy.load("en_core_web_sm")
+    tokens = model(sent)
+    for token in tokens:
+        lwords.append(token.lemma_)
+    return lwords
 def preProcess_html(fileName):
     sample = denoise_text(fileName)
     sample = replace_contractions(sample)
@@ -106,5 +116,5 @@ def preProcessSentence(sentence):
     words = to_lowercase(words)
     words = remove_punctuation(words)
     words = remove_stopwords(words)
-    words = lemmatize(words)
+    words = lemmatizeSpacy(words)
     return words 
