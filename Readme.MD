@@ -1,4 +1,4 @@
-The preprocessing.ipnypb contains code which applies all preprocessing steps mentione din Readme.pdf on the given corpus. Unzip stories1.zip and run this notebook if needed.
+The preprocessing.ipnypb contains code which applies all preprocessing steps mentioned in Readme.pdf on the given corpus. Unzip stories1.zip and run this notebook if needed.
 
 We apply two different lemmatizers. We use wordnet lemmatizer and spacy lemmatizer. We observed space lemmatizer works better.
 
